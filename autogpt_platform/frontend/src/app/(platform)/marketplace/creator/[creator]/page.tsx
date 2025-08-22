@@ -1,17 +1,23 @@
 import BackendAPI from "@/lib/autogpt-server-api";
 import { AgentsSection } from "@/components/agptui/composite/AgentsSection";
-import { BreadCrumbs } from "@/components/agptui/BreadCrumbs";
+import { Breadcrumbs } from "@/components/molecules/Breadcrumbs/Breadcrumbs";
 import { Metadata } from "next";
 import { CreatorInfoCard } from "@/components/agptui/CreatorInfoCard";
 import { CreatorLinks } from "@/components/agptui/CreatorLinks";
 import { Separator } from "@/components/ui/separator";
 
+// Force dynamic rendering to avoid static generation issues with cookies
+export const dynamic = "force-dynamic";
+
+type MarketplaceCreatorPageParams = { creator: string };
+
 export async function generateMetadata({
-  params,
+  params: _params,
 }: {
-  params: { creator: string };
+  params: Promise<MarketplaceCreatorPageParams>;
 }): Promise<Metadata> {
   const api = new BackendAPI();
+  const params = await _params;
   const creator = await api.getStoreCreator(params.creator.toLowerCase());
 
   return {
@@ -29,11 +35,12 @@ export async function generateMetadata({
 // }
 
 export default async function Page({
-  params,
+  params: _params,
 }: {
-  params: { creator: string };
+  params: Promise<MarketplaceCreatorPageParams>;
 }) {
   const api = new BackendAPI();
+  const params = await _params;
 
   try {
     const creator = await api.getStoreCreator(params.creator);
@@ -42,7 +49,7 @@ export default async function Page({
     return (
       <div className="mx-auto w-screen max-w-[1360px]">
         <main className="mt-5 px-4">
-          <BreadCrumbs
+          <Breadcrumbs
             items={[
               { name: "Store", link: "/marketplace" },
               { name: creator.name, link: "#" },
@@ -65,6 +72,7 @@ export default async function Page({
                 About
               </p>
               <div
+                data-testid="creator-description"
                 className="text-[48px] font-normal leading-[59px] text-neutral-900 dark:text-zinc-50"
                 style={{ whiteSpace: "pre-line" }}
               >
@@ -85,7 +93,7 @@ export default async function Page({
         </main>
       </div>
     );
-  } catch (error) {
+  } catch {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <div className="text-2xl text-neutral-900">Creator not found</div>
