@@ -14,12 +14,7 @@ export async function addDollars(formData: FormData) {
     comments: formData.get("comments") as string,
   };
   const api = new BackendApi();
-  const resp = await api.addUserCredits(
-    data.user_id,
-    data.amount,
-    data.comments,
-  );
-  console.log(resp);
+  await api.addUserCredits(data.user_id, data.amount, data.comments);
   revalidatePath("/admin/spending");
 }
 
@@ -29,6 +24,7 @@ export async function getUsersTransactionHistory(
   search?: string,
   transactionType?: CreditTransactionType,
 ): Promise<UsersBalanceHistoryResponse> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data: Record<string, any> = {
     page,
     page_size: pageSize,

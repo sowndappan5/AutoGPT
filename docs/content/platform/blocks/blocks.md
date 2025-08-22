@@ -86,6 +86,7 @@ Below is a comprehensive list of all available blocks, categorized by their prim
 | [Unreal Text to Speech](text_to_speech_block.md#unreal-text-to-speech) | Converts text to speech using Unreal Speech API |
 | [AI Shortform Video Creator](ai_shortform_video_block.md#ai-shortform-video-creator) | Generates short-form videos using AI |
 | [Replicate Flux Advanced Model](replicate_flux_advanced.md#replicate-flux-advanced-model) | Creates images using Replicate's Flux models |
+| [Flux Kontext](flux_kontext.md#flux-kontext) | Text-based image editing using Flux Kontext |
 
 ## Miscellaneous
 | Block Name | Description |
@@ -99,6 +100,8 @@ Below is a comprehensive list of all available blocks, categorized by their prim
 | Block Name | Description |
 |------------|-------------|
 | [Gmail Read](google/gmail.md#gmail-read) | Retrieves and reads emails from a Gmail account |
+| [Gmail Get Thread](google/gmail.md#gmail-get-thread) | Returns every message in a Gmail thread |
+| [Gmail Reply](google/gmail.md#gmail-reply) | Sends a reply that stays in the same thread |
 | [Gmail Send](google/gmail.md#gmail-send) | Sends emails using a Gmail account |
 | [Gmail List Labels](google/gmail.md#gmail-list-labels) | Retrieves all labels from a Gmail account |
 | [Gmail Add Label](google/gmail.md#gmail-add-label) | Adds a label to a specific email in a Gmail account |

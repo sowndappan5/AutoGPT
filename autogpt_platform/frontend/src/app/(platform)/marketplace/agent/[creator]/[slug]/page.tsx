@@ -1,19 +1,25 @@
 import BackendAPI from "@/lib/autogpt-server-api";
-import { BreadCrumbs } from "@/components/agptui/BreadCrumbs";
+import { Breadcrumbs } from "@/components/molecules/Breadcrumbs/Breadcrumbs";
 import { AgentInfo } from "@/components/agptui/AgentInfo";
 import { AgentImages } from "@/components/agptui/AgentImages";
 import { AgentsSection } from "@/components/agptui/composite/AgentsSection";
 import { BecomeACreator } from "@/components/agptui/BecomeACreator";
 import { Separator } from "@/components/ui/separator";
 import { Metadata } from "next";
-import getServerUser from "@/lib/supabase/getServerUser";
+import { getServerUser } from "@/lib/supabase/server/getServerUser";
+
+// Force dynamic rendering to avoid static generation issues with cookies
+export const dynamic = "force-dynamic";
+
+type MarketplaceAgentPageParams = { creator: string; slug: string };
 
 export async function generateMetadata({
-  params,
+  params: _params,
 }: {
-  params: { creator: string; slug: string };
+  params: Promise<MarketplaceAgentPageParams>;
 }): Promise<Metadata> {
   const api = new BackendAPI();
+  const params = await _params;
   const agent = await api.getStoreAgent(params.creator, params.slug);
 
   return {
@@ -31,11 +37,12 @@ export async function generateMetadata({
 //   }));
 // }
 
-export default async function Page({
-  params,
+export default async function MarketplaceAgentPage({
+  params: _params,
 }: {
-  params: { creator: string; slug: string };
+  params: Promise<MarketplaceAgentPageParams>;
 }) {
+  const params = await _params;
   const creator_lower = params.creator.toLowerCase();
   const { user } = await getServerUser();
   const api = new BackendAPI();
@@ -47,7 +54,7 @@ export default async function Page({
   });
   const libraryAgent = user
     ? await api
-        .getLibraryAgentByStoreListingVersionID(agent.store_listing_version_id)
+        .getLibraryAgentByStoreListingVersionID(agent.active_version_id || "")
         .catch((error) => {
           console.error("Failed to fetch library agent:", error);
           return null;
@@ -66,7 +73,7 @@ export default async function Page({
   return (
     <div className="mx-auto w-screen max-w-[1360px]">
       <main className="mt-5 px-4">
-        <BreadCrumbs items={breadcrumbs} />
+        <Breadcrumbs items={breadcrumbs} />
 
         <div className="mt-4 flex flex-col items-start gap-4 sm:mt-6 sm:gap-6 md:mt-8 md:flex-row md:gap-8">
           <div className="w-full md:w-auto md:shrink-0">
