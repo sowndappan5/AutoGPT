@@ -52,6 +52,21 @@ class AgentExecutorBlock(Block):
         def get_mismatch_error(cls, data: BlockInput) -> str | None:
             return validate_with_jsonschema(cls.get_input_schema(data), data)
 
+        def serialize(self) -> dict:
+            data = super().serialize()
+            if hasattr(self.input_schema, "agent_name"):
+                data["agent_name"] = self.input_schema.agent_name
+
+        @classmethod
+        def deserialize(cls, data: dict) -> "AgentExecutorBlock":
+            block = super().deserialize(data)
+            if "agent_name" in data:
+                block.input_schema.agent_name = data["agent_name"]
+            return block
+
+        return data
+
+
     class Output(BlockSchema):
         pass
 
